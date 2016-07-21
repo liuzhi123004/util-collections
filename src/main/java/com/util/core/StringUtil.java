@@ -9,5 +9,14 @@ public class StringUtil{
 		Optional<String> optional = Optional.ofNullable(str);
 		return optional.map(String::toString).orElse("");
 	}
-
+	
+	//判断是否含有中文字符
+	public static boolean isContainChinese(String str){
+		str = handleNullString(str);
+		if(str.length()==str.getBytes().length){
+			return false;
+		}
+		return true;
+	}
+	
 }
