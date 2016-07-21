@@ -1,10 +1,13 @@
 package com.util.core;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DateUtil {
@@ -62,9 +65,14 @@ public class DateUtil {
 		return LocalTime.parse(date, DateTimeFormatter.ofPattern(pattern));
 	}
 	
+	//根据给定的字符串日期和指定的格式得到是星期几(1:周一;2:周二;3:周三;4:周四;5:周五;6:周六;7:周日)
+	public static int getDayOfWeek(String date,String pattern) {
+		return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern)).getDayOfWeek().getValue();
+	}
+	
 	//判断给定的字符串日期是否是周末(周六和周日)
 	public static boolean isWeekends(String date,String pattern) {
-		int value = LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern)).getDayOfWeek().getValue();
+		int value = getDayOfWeek(date, pattern);
 		//周六(6)和周日(7)
 		if(value==6||value==7){
 			return true;
@@ -84,11 +92,6 @@ public class DateUtil {
 			list.add(localStartDate.format(dateTimeFormatter));
 		}
 		return list;
-	}
-	
-	//根据给定的字符串日期和指定的格式得到是星期几(1:周一;2:周二;3:周三;4:周四;5:周五;6:周六;7:周日)
-	public static int getDayOfWeek(String date,String pattern) {
-		return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern)).getDayOfWeek().getValue();
 	}
 	
 	//两时间早晚比较(年月日时分秒)
@@ -149,6 +152,20 @@ public class DateUtil {
 	public static String countTimeAfter(String date,String pattern,int second) throws Exception {
 		LocalDateTime localDateTime = getDateTime(date, pattern);
 		return localDateTime.plusSeconds(second).format(DateTimeFormatter.ofPattern(pattern));
+	}
+	
+	//LocalDateTime转Date
+	public static Date LocalDateTimeToDate(LocalDateTime localDateTime){
+		ZoneId zoneId = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zoneId).toInstant();
+		return Date.from(instant);
+	}
+	
+	//Date转LocalDateTime
+	public static LocalDateTime DateToLocalDateTime(Date date){
+		ZoneId zoneId = ZoneId.systemDefault();
+		Instant instant = date.toInstant();
+		return LocalDateTime.ofInstant(instant,zoneId);
 	}
 
 }
