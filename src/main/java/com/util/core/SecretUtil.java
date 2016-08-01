@@ -1,6 +1,9 @@
 package com.util.core;
 
 import java.util.UUID;
+import java.util.function.IntSupplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SecretUtil {
 	
@@ -39,12 +42,13 @@ public class SecretUtil {
 	
 	//默认生成随机密码
 	public static String defaultGenRandomPass(int passLen){
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < passLen; i++) {
-			int randomNum = (int)(Math.random()*KEYBORD_USERD_LENGTH);
-			sb.append(KEYBORD_USED_CHARACTERSET[randomNum]);
-		}
-		return sb.toString();
+		return IntStream.generate(new IntSupplier() {
+					public int getAsInt() {
+						return (int)(Math.random()*KEYBORD_USERD_LENGTH);
+					}
+				}).mapToObj(each->Character.toString(KEYBORD_USED_CHARACTERSET[each]))
+				.limit(passLen)
+				.collect(Collectors.joining());
 	}
 	
 }
